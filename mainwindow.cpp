@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+   bool ret = connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
 }
 
 MainWindow::~MainWindow()
@@ -22,21 +23,17 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionMenuRun_triggered()
 {
     engine = Engine();
-    QTextEdit *textEditor = findChild<QTextEdit*>("textEditor", Qt::FindChildOption::FindChildrenRecursively);
-    QTextEdit *textResults = findChild<QTextEdit*>("textResults", Qt::FindChildOption::FindChildrenRecursively);
-    if (!textEditor) return;
-    if (!textResults) return;
-    if(textEditor->toPlainText().size() > 0) {
+    if(ui->textEditor->toPlainText().size() > 0) {
         if (engine.New()) {
-            QString codeString = textEditor->toPlainText();
+            QString codeString = ui->textEditor->toPlainText();
             QByteArray code8bit = codeString.toLocal8Bit();
             char *code = code8bit.data();
             const char *result = engine.Run(code);
-            textResults->append(result);
+            ui->textResults->append(result);
             return;
         }
     }
-    textResults->append("Error\n");
+    ui->textResults->append("Error\n");
 }
 
 void MainWindow::on_actionMenuClear_triggered()
@@ -48,3 +45,54 @@ void MainWindow::on_actionMenuNew_triggered()
 {
     ui->textEditor->setPlainText("");
 }
+
+void MainWindow::on_textEditor_textChanged()
+{
+    const char* keyColor = "#F92672";
+
+    if (disconnect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged))
+    {
+        QTextCursor cursor = ui->textEditor->textCursor();
+        QString data = colorWord(ui->textEditor->toPlainText().replace("\n", "<br />"), keywordsList, keyColor);
+        ui->textEditor->setHtml(data);
+        ui->textEditor->setTextCursor(cursor);
+        connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+    }
+}
+
+QString MainWindow::colorWord(QString code, QString words, QString color)
+{
+    const char* masterString = "<font color=\"KEYCOLOR\">\\1</font>";
+    QString replaceString =
+            QString(masterString).replace("KEYCOLOR", color);
+    QRegExp regex = QRegExp(words);
+    code.replace(regex, replaceString);
+    return code;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

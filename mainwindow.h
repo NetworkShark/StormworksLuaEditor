@@ -21,12 +21,13 @@ public:
 private slots:
     void on_actionExit_triggered();
     void on_actionMenuRun_triggered();
-
     void on_actionMenuNew_triggered();
-
     void on_actionMenuClear_triggered();
 
 private:
+    const QString keywordsList = "(break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not)";
+    void on_textEditor_textChanged();
+    QString colorWord(QString code, QString words, QString color);
     Ui::MainWindow *ui;
     Engine engine;
 };
