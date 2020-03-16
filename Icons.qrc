@@ -21,5 +21,6 @@
         <file>Icons/iconfinder_terminal.png</file>
         <file>Icons/iconfinder_terminal_clear.png</file>
         <file>Icons/iconfinder_terminal_Play.png</file>
+        <file>Icons/Logo.ico</file>
     </qresource>
 </RCC>
