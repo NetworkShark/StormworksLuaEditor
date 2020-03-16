@@ -38,10 +38,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Icons.qrc
 
-win32: LIBS += -L$$PWD/lua/ -llua5.3.5-static
+win32: LIBS += -L$$PWD/lua535/ -llua5.3.5-static
 
-INCLUDEPATH += $$PWD/lua
-DEPENDPATH += $$PWD/lua
+INCLUDEPATH += $$PWD/lua535
+DEPENDPATH += $$PWD/lua535
 
-win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lua/lua5.3.5-static.lib
-else:win32-g++: PRE_TARGETDEPS += $$PWD/lua/lua5.3.5-static.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lua535/lua5.3.5-static.lib
+else:win32-g++: PRE_TARGETDEPS += $$PWD/lua535/lua5.3.5-static.lib
