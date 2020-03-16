@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>Icons/imageres_81.ico</file>
+        <file>Icons/imageres_84.ico</file>
+        <file>Icons/imageres_98.ico</file>
+        <file>Icons/imageres_99.ico</file>
+        <file>Icons/imageres_102.ico</file>
+        <file>Icons/imageres_5306.ico</file>
+        <file>Icons/imageres_5311.ico</file>
+        <file>Icons/imageres_5315.ico</file>
+        <file>Icons/shell32_240.ico</file>
+        <file>Icons/shell32_242.ico</file>
+        <file>Icons/shell32_243.ico</file>
+        <file>Icons/shell32_264.ico</file>
+        <file>Icons/shell32_16762.ico</file>
+        <file>Icons/shell32_16763.ico</file>
+        <file>Icons/shell32_16777.ico</file>
+        <file>Icons/62835-floppy-disk.ico</file>
+        <file>Icons/qt_94938.ico</file>
+        <file>Icons/play-16.png</file>
+    </qresource>
+</RCC>

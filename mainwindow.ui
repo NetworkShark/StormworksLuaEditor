@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QScrollArea" name="scrollAreaText">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>-1</y>
+      <width>801</width>
+      <height>421</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>799</width>
+       <height>419</height>
+      </rect>
+     </property>
+     <widget class="QTextEdit" name="textEditor">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>801</width>
+        <height>421</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QScrollArea" name="scrollAreaResult">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>419</y>
+      <width>801</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>799</width>
+       <height>99</height>
+      </rect>
+     </property>
+     <widget class="QTextEdit" name="textResults">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>801</width>
+        <height>101</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionMenuNew"/>
+   <addaction name="actionMenuOpen"/>
+   <addaction name="actionMenuSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionMenuRun"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionMenuNew">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Icons/Icons/imageres_102.ico</normaloff>:/Icons/Icons/imageres_102.ico</iconset>
+   </property>
+   <property name="text">
+    <string>NewMenu</string>
+   </property>
+   <property name="toolTip">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionMenuOpen">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Icons/Icons/shell32_264.ico</normaloff>:/Icons/Icons/shell32_264.ico</iconset>
+   </property>
+   <property name="text">
+    <string>OpenMenu</string>
+   </property>
+   <property name="toolTip">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionMenuSave">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Icons/Icons/62835-floppy-disk.ico</normaloff>:/Icons/Icons/62835-floppy-disk.ico</iconset>
+   </property>
+   <property name="text">
+    <string>SaveMenu</string>
+   </property>
+   <property name="toolTip">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionMenuRun">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Icons/Icons/play-16.png</normaloff>:/Icons/Icons/play-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="toolTip">
+    <string>Run</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="Icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>
