@@ -22,6 +22,10 @@ private slots:
     void on_actionExit_triggered();
     void on_actionMenuRun_triggered();
 
+    void on_actionMenuNew_triggered();
+
+    void on_actionMenuClear_triggered();
+
 private:
     Ui::MainWindow *ui;
     Engine engine;

@@ -38,3 +38,13 @@ void MainWindow::on_actionMenuRun_triggered()
     }
     textResults->append("Error\n");
 }
+
+void MainWindow::on_actionMenuClear_triggered()
+{
+    ui->textResults->setPlainText("");
+}
+
+void MainWindow::on_actionMenuNew_triggered()
+{
+    ui->textEditor->setPlainText("");
+}

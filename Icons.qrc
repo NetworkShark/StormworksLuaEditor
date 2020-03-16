@@ -18,5 +18,8 @@
         <file>Icons/62835-floppy-disk.ico</file>
         <file>Icons/qt_94938.ico</file>
         <file>Icons/play-16.png</file>
+        <file>Icons/iconfinder_terminal.png</file>
+        <file>Icons/iconfinder_terminal_clear.png</file>
+        <file>Icons/iconfinder_terminal_Play.png</file>
     </qresource>
 </RCC>
