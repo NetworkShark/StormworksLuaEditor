@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+    connect(this->ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
 }
 
 MainWindow::~MainWindow()
@@ -18,22 +18,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionExit_triggered()
 {
+    engine->Close();
     QApplication::exit();
 }
 void MainWindow::on_actionMenuRun_triggered()
 {
-    engine = Engine();
-    if(ui->textEditor->toPlainText().size() > 0) {
-        if (engine.New()) {
-            QString codeString = ui->textEditor->toPlainText();
+    if (!this->engine)
+        this->engine = new Engine();
+    if(this->ui->textEditor->toPlainText().size() > 0) {
+        if (this->engine->New()) {
+            QString codeString = this->ui->textEditor->toPlainText();
             QByteArray code8bit = codeString.toLocal8Bit();
             char *code = code8bit.data();
-            const char *result = engine.Run(code);
-            ui->textResults->append(result);
+            const char *result = this->engine->Run(code);
+            this->ui->textResults->append(result);
             return;
         }
     }
-    ui->textResults->append("Error\n");
+    this->ui->textResults->append("Error\n");
 }
 void MainWindow::on_actionMenuClear_triggered()
 {

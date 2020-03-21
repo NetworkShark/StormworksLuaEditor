@@ -2,13 +2,14 @@
 
 Engine::Engine()
 {
+    this->lua = nullptr;
 }
 
 bool Engine::New(){
     if(this->lua)
         this->Close();
     this->lua = luaL_newstate();
-    if(this->lua)
+    if(!this->lua)
         return false;
     luaL_openlibs(this->lua);
     return true;

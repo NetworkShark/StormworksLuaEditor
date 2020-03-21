@@ -29,7 +29,7 @@ private:
     void on_textEditor_textChanged();
     QString highlightCode(QString code);
     Ui::MainWindow *ui;
-    Engine engine;
+    Engine *engine = nullptr;
 
     char stringsHtmlColor[8] = "#F2DF17";
     char numbersHtmlColor[8] = "#792692";
