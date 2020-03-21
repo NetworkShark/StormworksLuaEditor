@@ -22,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     engine.h \
+    keywordHighlight.h \
     mainwindow.h
 
 FORMS += \

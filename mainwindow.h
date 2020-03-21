@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QMainWindow>
 #include "engine.h"
+#include "keywordHighlight.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,10 +26,15 @@ private slots:
     void on_actionMenuClear_triggered();
 
 private:
-    const QString keywordsList = "(break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not)";
     void on_textEditor_textChanged();
-    QString colorWord(QString code, QString words, QString color);
+    QString highlightCode(QString code);
     Ui::MainWindow *ui;
     Engine engine;
+
+    char stringsHtmlColor[8] = "#F2DF17";
+    char numbersHtmlColor[8] = "#792692";
+    char commentsHtmlColor[8] = "#75715E";
+    char keywordLuaHtmlColor[8] = "#F92672";
+    char keywordStormworksColor[8] = "#66D9EF";
 };
 #endif // MAINWINDOW_H
