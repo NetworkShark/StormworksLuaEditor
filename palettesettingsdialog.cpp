@@ -6,9 +6,12 @@ PaletteSettingsDialog::PaletteSettingsDialog(QWidget *parent, std::map<QString, 
     ui(new Ui::PaletteSettingsDialog)
 {
     ui->setupUi(this);
-    this->dictionaryPalette = palette;
-    if (this->dictionaryPalette)
+
+    this->dictionaryPalette = nullptr;
+    if (palette) {
+        this->dictionaryPalette = palette;
         Init();
+    }
 }
 
 PaletteSettingsDialog::~PaletteSettingsDialog()
@@ -18,15 +21,15 @@ PaletteSettingsDialog::~PaletteSettingsDialog()
 
 void PaletteSettingsDialog::Init()
 {
-    QList<QPushButton *> btns = findChildren<QPushButton *>();
     QRegExp regex("btnPicker([A-z_0-9]+)");
+    QList<QPushButton *> btns = findChildren<QPushButton *>(regex);
     foreach (QPushButton* btn, btns) {
         if (regex.exactMatch(btn->objectName()))
         {
-            std::map<QString, QString>::iterator it;
-            if ((it = dictionaryPalette->find(regex.cap(1))) != dictionaryPalette->end())
-            {
-                DisplayColor(btn, it->second);
+            QString color = getColorfromDictionary(regex.cap(1));
+            if (color != nullptr) {
+                DisplayColor(btn, color);
+                connect(btn, &QPushButton::clicked, this, &PaletteSettingsDialog::on_btnPicker_clicked);
             }
         }
     }
@@ -46,4 +49,45 @@ void PaletteSettingsDialog::DisplayColor(QPushButton* btn, QString keyColor, con
     QIcon ButtonIcon(pix->copy());
     btn->setIcon(ButtonIcon);
     btn->setIconSize(pix->rect().size());
+}
+
+QString PaletteSettingsDialog::getColorfromDictionary(QString key)
+{
+    std::map<QString, QString>::iterator it;
+    if ((it = dictionaryPalette->find(key)) != dictionaryPalette->end())
+    {
+        return it->second;
+    }
+    return nullptr;
+}
+
+bool PaletteSettingsDialog::setColorfromDictionary(QString key, QColor color)
+{
+    std::map<QString, QString>::iterator it;
+    if ((it = dictionaryPalette->find(key)) != dictionaryPalette->end())
+    {
+        QString colorName =  color.name();
+        (*dictionaryPalette)[key] = colorName;
+        return true;
+    }
+    return false;
+}
+
+void PaletteSettingsDialog::on_btnPicker_clicked()
+{
+    QRegExp regex("btnPicker([A-z_0-9]+)");
+    if (regex.exactMatch(this->sender()->objectName())) {
+        QString key = regex.cap(1);
+        QString color = getColorfromDictionary(regex.cap(1));
+        if (color != nullptr) {
+            QColorDialog dialog(color, this);
+            /*dialog.show();
+            dialog.exec();*/
+            QColor c = dialog.getColor(color, this, regex.cap(1));
+            if (setColorfromDictionary(regex.cap(1), c))
+            {
+                DisplayColor((QPushButton*)this->sender(), c.name());
+            }
+        }
+    }
 }

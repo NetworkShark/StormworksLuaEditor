@@ -44,4 +44,5 @@ private:
     char keywordStormworksColor_L1[8] = "#6609EF";
     char keywordStormworksColor_L2[8] = "#66D9EF";
 };
+
 #endif // MAINWINDOW_H
