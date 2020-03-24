@@ -1,15 +1,14 @@
 #include "palettesettingsdialog.h"
 #include "ui_palettesettingsdialog.h"
 
-PaletteSettingsDialog::PaletteSettingsDialog(QWidget *parent, std::map<QString, QString> *palette) :
+PaletteSettingsDialog::PaletteSettingsDialog(QWidget *parent, Settings *globalSettings) :
     QDialog(parent),
     ui(new Ui::PaletteSettingsDialog)
 {
     ui->setupUi(this);
 
-    this->dictionaryPalette = nullptr;
-    if (palette) {
-        this->dictionaryPalette = palette;
+    if (globalSettings) {
+        this->globalSettings = globalSettings;
         Init();
     }
 }
@@ -53,21 +52,21 @@ void PaletteSettingsDialog::DisplayColor(QPushButton* btn, QString keyColor, con
 
 QString PaletteSettingsDialog::getColorfromDictionary(QString key)
 {
-    std::map<QString, QString>::iterator it;
-    if ((it = dictionaryPalette->find(key)) != dictionaryPalette->end())
+    std::map<QString, KeywordHighlight>::iterator it;
+    if ((it = globalSettings->highlightings.find(key)) != globalSettings->highlightings.end())
     {
-        return it->second;
+        return it->second.color;
     }
     return nullptr;
 }
 
 bool PaletteSettingsDialog::setColorfromDictionary(QString key, QColor color)
 {
-    std::map<QString, QString>::iterator it;
-    if ((it = dictionaryPalette->find(key)) != dictionaryPalette->end())
+    std::map<QString, KeywordHighlight>::iterator it;
+    if ((it = globalSettings->highlightings.find(key)) != globalSettings->highlightings.end())
     {
         QString colorName =  color.name();
-        (*dictionaryPalette)[key] = colorName;
+        globalSettings->highlightings[key] = colorName;
         return true;
     }
     return false;

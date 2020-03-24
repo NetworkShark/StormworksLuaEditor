@@ -20,29 +20,21 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    Settings* globalSettings = nullptr;
 
 private slots:
     void on_actionExit_triggered();
     void on_actionMenuRun_triggered();
     void on_actionMenuNew_triggered();
     void on_actionMenuClear_triggered();
-
     void on_actionMenuPalette_triggered();
 
 private:
     void on_textEditor_textChanged();
     QString highlightCode(QString code);
-    Ui::MainWindow *ui;
-    Engine *engine = nullptr;
+    Ui::MainWindow* ui;
+    Engine* engine = nullptr;
 
-    char codeHtmlColor[8] = "#F926F2";
-    char stringsHtmlColor[8] = "#F2DF17";
-    char numbersHtmlColor[8] = "#792692";
-    char commentsHtmlColor[8] = "#75715E";
-    char keywordLuaHtmlColor_L1[8] = "#092672";
-    char keywordLuaHtmlColor_L2[8] = "#F92672";
-    char keywordStormworksColor_L1[8] = "#6609EF";
-    char keywordStormworksColor_L2[8] = "#66D9EF";
 };
 
 #endif // MAINWINDOW_H

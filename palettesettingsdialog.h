@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QColorDialog>
 #include <map>
+#include "structs.h"
 
 namespace Ui {
 class PaletteSettingsDialog;
@@ -16,14 +17,14 @@ class PaletteSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PaletteSettingsDialog(QWidget *parent = nullptr, std::map<QString, QString> *palette = nullptr);
+    explicit PaletteSettingsDialog(QWidget *parent = nullptr, Settings *globalSettings = nullptr);
     ~PaletteSettingsDialog();
+    Settings *globalSettings = nullptr;
 
 private:
     Ui::PaletteSettingsDialog *ui;
-    std::map<QString, QString> *dictionaryPalette;
     void Init();
-    void DisplayColor(QPushButton* btn, QString keyColor, const int marginW = 12, const int marginH = 12, const char* borderColor = "#a3a3a3");
+    void DisplayColor(QPushButton *btn, QString keyColor, const int marginW = 12, const int marginH = 12, const char *borderColor = "#a3a3a3");
     QString getColorfromDictionary(QString key);
     bool setColorfromDictionary(QString key, QColor color);
     void on_btnPicker_clicked();
