@@ -69,9 +69,11 @@ QString MainWindow::highlightCode(QString code)
     QRegExp regexStringValidator("(\".+\"|\'.+\')");
     QRegExp regexNumbersValidator("(true|false|\\d+)");
     QRegExp regexCommentsValidator("(--[^\\n]*)");
-    const keywordHighlight keywordsHighlight[2] = {
-        { keywordLuaHtmlColor, "break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not" }, // rosso -> keyword Lua Std
-        { keywordStormworksColor, "timer|start|stop|print|printColor|tostring|unpack|next|tonumber|type|pairs|ipairs|math|abs|acos|asin|abs|atan|ceil|cos|deg|exp|floor|fmod|huge|max|maxinteger|min|mininteger|modf|pi|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult|table|concat|insert|move|pack|remove|sort|unpack|string|byte|char|dump|find|format|gmatch|gsub|len|lower|match|packsize|reverse|sub|upper|screen|getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|map|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|input|getBool|getNumber|output|setBool|setNumber|property|getBool|getNumber|getText" } // azzurro -> keyword Lua Stormworks
+    const keywordHighlight keywordsHighlight[4] = {
+        { keywordLuaHtmlColor_L1, "break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not|math|table|string" },
+        { keywordLuaHtmlColor_L2, "tostring|next|tonumber|type|pairs|ipairs|abs|acos|asin|abs|atan|ceil|cos|deg|exp|floor|fmod|huge|max|maxinteger|min|mininteger|modf|pi|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult|concat|insert|move|pack|remove|sort|unpack|byte|char|dump|find|format|gmatch|gsub|len|lower|match|packsize|reverse|sub|upper" },
+        { keywordStormworksColor_L1, "screen|map|input|output|property" },
+        { keywordStormworksColor_L2, "getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|getBool|getNumber|setBool|setNumber|getText" }
     };
 
     const char* startHighlightTag = "<font color=\"KEYCOLOR\">";
@@ -113,10 +115,40 @@ QString MainWindow::highlightCode(QString code)
         pos += regexpSplitCode.matchedLength();
     }
 
-
-    return code.replace("\t", "    ").insert(0, "<pre>").prepend("</pre>");
+    QString startHtml = QString("<font color=\"KEYCOLOR\"><pre>").replace("KEYCOLOR", codeHtmlColor);
+    QString endHtml = QString("</pre></font>");
+    return code.replace("\t", "    ").insert(0, startHtml).prepend(endHtml);
 
 }
+
+void MainWindow::on_actionMenuPalette_triggered()
+{
+    std::map<QString, QString> colors;
+    colors.insert(std::pair<QString, QString>(QString("Code"), QString(codeHtmlColor)));
+    colors.insert(std::pair<QString, QString>(QString("Strings"), QString(stringsHtmlColor)));
+    colors.insert(std::pair<QString, QString>(QString("Numbers"), QString(numbersHtmlColor)));
+    colors.insert(std::pair<QString, QString>(QString("Comments"), QString(commentsHtmlColor)));
+    colors.insert(std::pair<QString, QString>(QString("Lua_L1"), QString(keywordLuaHtmlColor_L1)));
+    colors.insert(std::pair<QString, QString>(QString("Lua_L2"), QString(keywordLuaHtmlColor_L2)));
+    colors.insert(std::pair<QString, QString>(QString("Stormworks_L1"), QString(keywordStormworksColor_L1)));
+    colors.insert(std::pair<QString, QString>(QString("Stormworks_L2"), QString(keywordStormworksColor_L2)));
+    PaletteSettingsDialog dialog(this, &colors);
+    dialog.show();
+    dialog.exec();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

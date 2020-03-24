@@ -18,15 +18,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     engine.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    palettesettingsdialog.cpp
 
 HEADERS += \
     engine.h \
-    keywordHighlight.h \
-    mainwindow.h
+    mainwindow.h \
+    palettesettingsdialog.h \
+    structs.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    palettesettingsdialog.ui
 
 TRANSLATIONS += \
     StormworksLuaEditor_it_IT.ts

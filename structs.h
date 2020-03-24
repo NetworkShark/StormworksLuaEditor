@@ -6,19 +6,6 @@
 #include <QString>
 #include <QStringList>
 
-/*
-struct keywordHighlight
-{
-    QString color;
-    QString keywords;
-
-    keywordHighlight(const char* color, const char* keywords) {
-        this->color = color;
-        this->keywords = keywords;
-    }
-};
-*/
-
 class keywordHighlight
 {
 public:

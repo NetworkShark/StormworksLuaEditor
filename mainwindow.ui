@@ -159,7 +159,7 @@
      <x>0</x>
      <y>0</y>
      <width>820</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -188,6 +188,7 @@
    <addaction name="actionMenuRun"/>
    <addaction name="actionMenuClear"/>
    <addaction name="separator"/>
+   <addaction name="actionMenuPalette"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionExit">
@@ -253,6 +254,18 @@
    </property>
    <property name="toolTip">
     <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionMenuPalette">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Icons/Icons/shell32_240.ico</normaloff>:/Icons/Icons/shell32_240.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Palette Setting</string>
+   </property>
+   <property name="toolTip">
+    <string>Palette Setting</string>
    </property>
   </action>
  </widget>
