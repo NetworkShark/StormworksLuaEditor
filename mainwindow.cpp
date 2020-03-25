@@ -69,6 +69,7 @@ void MainWindow::on_textEditor_textChanged()
 QString MainWindow::highlightCode(QString code)
 {
     if (!globalSettings) return code;
+    code = code.replace("\t", "  ");
     map<QString, KeywordHighlight> highlights = globalSettings->highlightings;
     const char* startHighlightTag = "<font color=\"KEYCOLOR\">";
     QString endHighlightTag = "</font>";
@@ -102,60 +103,21 @@ QString MainWindow::highlightCode(QString code)
         pos += regexpSplitCode.matchedLength();
     }
 
-    QString startHtml = QString("<font color=\"KEYCOLOR\"><pre>").replace("KEYCOLOR", colorDefault);
-    QString endHtml = QString("</pre></font>");
-    return code.replace("\t", "    ").insert(0, startHtml).prepend(endHtml);
+    QString startHtml = QString("<pre style=\"color:KEYCOLOR;\">").replace("KEYCOLOR", colorDefault);
+    QString endHtml = QString("</pre>");
+    return code.insert(0, startHtml).prepend(endHtml);
 
 }
 
 void MainWindow::on_actionMenuPalette_triggered()
 {
-    Settings tmpSetting = *globalSettings;
-    PaletteSettingsDialog dialog(this, &tmpSetting);
+    Settings* tmpSetting = new Settings(*globalSettings);
+    PaletteSettingsDialog dialog(this, tmpSetting);
     dialog.show();
     dialog.exec();
-    if (tmpSetting != *globalSettings) {
-        globalSettings = &tmpSetting;
+    if (*tmpSetting != *globalSettings) {
+        globalSettings = tmpSetting;
         globalSettings->writeConfig();
         emit on_textEditor_textChanged();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
