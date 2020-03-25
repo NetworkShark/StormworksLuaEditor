@@ -17,9 +17,9 @@ class PaletteSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
+    Settings *globalSettings = nullptr;
     explicit PaletteSettingsDialog(QWidget *parent = nullptr, Settings *globalSettings = nullptr);
     ~PaletteSettingsDialog();
-    Settings *globalSettings = nullptr;
 
 private:
     Ui::PaletteSettingsDialog *ui;

@@ -66,7 +66,7 @@ bool PaletteSettingsDialog::setColorfromDictionary(QString key, QColor color)
     if ((it = globalSettings->highlightings.find(key)) != globalSettings->highlightings.end())
     {
         QString colorName =  color.name();
-        globalSettings->highlightings[key] = colorName;
+        globalSettings->highlightings[key].color = colorName;
         return true;
     }
     return false;

@@ -66,64 +66,6 @@ void MainWindow::on_textEditor_textChanged()
     }
 }
 
-/*
-QString MainWindow::highlightCode(QString code)
-{
-    QRegExp regexStringValidator("(\".+\"|\'.+\')");
-    QRegExp regexNumbersValidator("(true|false|\\d+)");
-    QRegExp regexCommentsValidator("(--[^\\n]*)");
-    const KeywordHighlight keywordsHighlight[4] = {
-        { keywordLuaHtmlColor_L1, "break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not|math|table|string" },
-        { keywordLuaHtmlColor_L2, "tostring|next|tonumber|type|pairs|ipairs|abs|acos|asin|abs|atan|ceil|cos|deg|exp|floor|fmod|huge|max|maxinteger|min|mininteger|modf|pi|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult|concat|insert|move|pack|remove|sort|unpack|byte|char|dump|find|format|gmatch|gsub|len|lower|match|packsize|reverse|sub|upper" },
-        { keywordStormworksColor_L1, "screen|map|input|output|property" },
-        { keywordStormworksColor_L2, "getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|getBool|getNumber|setBool|setNumber|getText" }
-    };
-
-    const char* startHighlightTag = "<font color=\"KEYCOLOR\">";
-    QString endHighlightTag = "</font>";
-    QRegExp regexpSplitCode("(--[^\\n]*|\\w+)");
-
-    int pos = 0;
-    int sizeArrayHighlight = sizeof(keywordsHighlight) / sizeof(keywordsHighlight[0]);
-
-    while ((pos = regexpSplitCode.indexIn(code, pos)) != -1) {
-        bool found = false;
-        QString color;
-        QString word = regexpSplitCode.cap(1);
-        if (regexCommentsValidator.exactMatch(word)) {
-            color = QString(commentsHtmlColor);
-            found = true;
-        } else if (regexStringValidator.exactMatch(word)) {
-            color = QString(stringsHtmlColor);
-            found = true;
-        } else if (regexNumbersValidator.exactMatch(word)) {
-            color = QString(numbersHtmlColor);
-            found = true;
-        } else {
-            for (int i=0;i<sizeArrayHighlight;i++) {
-                if (keywordsHighlight[i].keywords.contains(word))
-                {
-                    color = keywordsHighlight[i].color;
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (found) {
-            QString coloredStartTag = QString(startHighlightTag).replace("KEYCOLOR", color);
-            code.insert(pos+regexpSplitCode.matchedLength(), endHighlightTag);
-            code.insert(pos, coloredStartTag);
-            pos += coloredStartTag.size() + endHighlightTag.size();
-        }
-        pos += regexpSplitCode.matchedLength();
-    }
-
-    QString startHtml = QString("<font color=\"KEYCOLOR\"><pre>").replace("KEYCOLOR", codeHtmlColor);
-    QString endHtml = QString("</pre></font>");
-    return code.replace("\t", "    ").insert(0, startHtml).prepend(endHtml);
-
-}
-*/
 QString MainWindow::highlightCode(QString code)
 {
     if (!globalSettings) return code;
@@ -168,9 +110,15 @@ QString MainWindow::highlightCode(QString code)
 
 void MainWindow::on_actionMenuPalette_triggered()
 {
-    PaletteSettingsDialog dialog(this, globalSettings);
+    Settings tmpSetting = *globalSettings;
+    PaletteSettingsDialog dialog(this, &tmpSetting);
     dialog.show();
     dialog.exec();
+    if (tmpSetting != *globalSettings) {
+        globalSettings = &tmpSetting;
+        globalSettings->writeConfig();
+        emit on_textEditor_textChanged();
+    }
 }
 
 

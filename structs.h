@@ -39,6 +39,21 @@ public:
         this->keywords = keywords.split(separator, QString::SkipEmptyParts);
     }
 
+    bool operator==(const KeywordHighlight &other) {
+        return this->color == other.color &&
+                this->regex == other.regex &&
+                this->keywords == other.keywords &&
+                this->defaultColor == other.defaultColor;
+    }
+    friend bool operator==(const KeywordHighlight &left, const KeywordHighlight &right) {
+        return left.color == right.color &&
+                left.regex == right.regex &&
+                left.keywords == right.keywords &&
+                left.defaultColor == right.defaultColor;
+    }
+    bool operator!=(const KeywordHighlight &other) { return !operator==(other); }
+    friend bool operator!=(const KeywordHighlight &left, const KeywordHighlight &right) { return !(left == right); }
+
 };
 
 #endif // KEYWORDHIGHLIGHT_H
@@ -49,7 +64,11 @@ public:
 class Settings
 {
 public:
+//  Properties
+    QString fileSourcePath;
     map<QString, KeywordHighlight> highlightings;
+
+//  Functions
     static Settings* readConfig(QString pathfile) {
         if (!QFile::exists(pathfile)) return nullptr;
         QFile file(pathfile);
@@ -90,9 +109,15 @@ public:
         }
         retOK = highlightingsOK;
 
-        if (retOK) return settings;
+        if (retOK) {
+            settings->fileSourcePath = pathfile;
+            return settings;
+        }
         return nullptr;
 
+    }
+    void writeConfig() {
+        writeConfig(this->fileSourcePath);
     }
     void writeConfig(QString pathfile) {
         QJsonObject highlight;
@@ -135,8 +160,21 @@ public:
         highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L1",KeywordHighlight("#6609EF","screen|map|input|output|property", '|', false)));
         highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L2",KeywordHighlight("#66D9EF","getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|getBool|getNumber|setBool|setNumber|getText", '|', false)));
     }
+    bool operator==(const Settings &other) {
+        if (this->fileSourcePath != other.fileSourcePath) return false;
+        if (this->highlightings != other.highlightings) return false;
+        return true;
+    }
+    friend bool operator==(const Settings &left, const Settings &right) {
+        if (left.fileSourcePath != right.fileSourcePath) return false;
+        if (left.highlightings != right.highlightings) return false;
+        return true;
+    }
+    bool operator!=(const Settings &other) { return !operator==(other); }
+    friend bool operator!=(const Settings &left, const Settings &right) { return !(left==right); }
 };
 #endif // SETTINGS_H
+
 /*
 {
   "highlightings" : {
