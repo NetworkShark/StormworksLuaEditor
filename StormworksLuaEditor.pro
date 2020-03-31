@@ -19,16 +19,19 @@ SOURCES += \
     engine.cpp \
     main.cpp \
     mainwindow.cpp \
+    options_dialog.cpp \
     palettesettingsdialog.cpp
 
 HEADERS += \
     engine.h \
     mainwindow.h \
+    options_dialog.h \
     palettesettingsdialog.h \
     structs.h
 
 FORMS += \
     mainwindow.ui \
+    options_dialog.ui \
     palettesettingsdialog.ui
 
 TRANSLATIONS += \
