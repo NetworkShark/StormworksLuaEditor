@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMessageBox>
 
 using namespace std;
 
@@ -66,9 +67,16 @@ class Settings
 public:
 //  Properties
     QString fileSourcePath;
-    map<QString, KeywordHighlight> highlightings;
+    //map<QString, KeywordHighlight> highlightings;
+    struct FONT_SETTINGS {
+        string fontFamily;
+        ushort fontSize;
+        map<QString, KeywordHighlight> highlightings;
+    };
+    FONT_SETTINGS fontSettings;
 
 //  Functions
+
     static Settings* readConfig(QString pathfile) {
         if (!QFile::exists(pathfile)) return nullptr;
         QFile file(pathfile);
@@ -76,42 +84,44 @@ public:
 
         QString lines = file.readAll();
         file.close();
-        QJsonDocument doc = QJsonDocument::fromBinaryData(lines.toUtf8());
-        QJsonObject obj = QJsonDocument::fromBinaryData(lines.toUtf8()).object();
-        Settings* settings = new Settings();
-        bool retOK = false, highlightingsOK = false;
+        QJsonDocument doc = QJsonDocument::fromJson(lines.toUtf8());
+        if (!doc.isEmpty()) {
+            QJsonObject obj = doc.object();
+            Settings* settings = new Settings();
+            bool retOK = false, highlightingsOK = false;
 
-        for (QJsonObject::iterator itemSettings=obj.begin();itemSettings!=obj.end();++itemSettings) {
-            if (itemSettings.key() == QString("highlightings")) {
-                if (itemSettings.value().isObject()) {
-                    QJsonObject highlight = obj.value(itemSettings.key()).toObject();
-                    for (QJsonObject::iterator itemHighlight=highlight.begin();itemHighlight!=highlight.end();++itemHighlight) {
-                        QString key = itemHighlight.key();
-                        QJsonObject value = highlight.value(key).toObject();
-                        bool def = value.value(QString("defaultColor")).toBool();
-                        QString color = value.value(QString("color")).toString();
-                        QString rawRegex = value.value(QString("regex")).toString();
-                        QString keywords = value.value(QString("keywords")).toString();
-                        KeywordHighlight* keyword;
-                        if (def)
-                            keyword = new KeywordHighlight(color, def);
-                        else if (!rawRegex.isEmpty())
-                            keyword = new KeywordHighlight(color, QRegExp(rawRegex));
-                        else
-                            keyword = new KeywordHighlight(color, keywords);
-                        if (keyword) {
-                            settings->highlightings.insert(pair<QString, KeywordHighlight>(key, *keyword));
-                            if (!highlightingsOK) highlightingsOK = true;
+            for (QJsonObject::iterator itemSettings=obj.begin();itemSettings!=obj.end();++itemSettings) {
+                if (itemSettings.key() == QString("highlightings")) {
+                    if (itemSettings.value().isObject()) {
+                        QJsonObject highlight = obj.value(itemSettings.key()).toObject();
+                        for (QJsonObject::iterator itemHighlight=highlight.begin();itemHighlight!=highlight.end();++itemHighlight) {
+                            QString key = itemHighlight.key();
+                            QJsonObject value = highlight.value(key).toObject();
+                            bool def = value.value(QString("defaultColor")).toBool();
+                            QString color = value.value(QString("color")).toString();
+                            QString rawRegex = value.value(QString("regex")).toString();
+                            QString keywords = value.value(QString("keywords")).toString();
+                            KeywordHighlight* keyword;
+                            if (def)
+                                keyword = new KeywordHighlight(color, def);
+                            else if (!rawRegex.isEmpty())
+                                keyword = new KeywordHighlight(color, QRegExp(rawRegex));
+                            else
+                                keyword = new KeywordHighlight(color, keywords);
+                            if (keyword) {
+                                settings->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>(key, *keyword));
+                                if (!highlightingsOK) highlightingsOK = true;
+                            }
                         }
                     }
                 }
             }
-        }
-        retOK = highlightingsOK;
+            retOK = highlightingsOK;
 
-        if (retOK) {
-            settings->fileSourcePath = pathfile;
-            return settings;
+            if (retOK) {
+                settings->fileSourcePath = pathfile;
+                return settings;
+            }
         }
         return nullptr;
 
@@ -122,7 +132,7 @@ public:
     void writeConfig(QString pathfile) {
         QJsonObject highlight;
         QString keywordsList;
-        for (map<QString, KeywordHighlight>::iterator it=highlightings.begin();it!=highlightings.end();++it) {
+        for (map<QString, KeywordHighlight>::iterator it=this->fontSettings.highlightings.begin();it!=this->fontSettings.highlightings.end();++it) {
             keywordsList = "";
             if (!it->second.keywords.isEmpty()) {
                 keywordsList = it->second.keywords.at(0);
@@ -150,24 +160,24 @@ public:
         file.close();
     }
     void init() {
-        highlightings.insert(pair<QString, KeywordHighlight>("Code",KeywordHighlight("#F926F2",true)));
-        highlightings.insert(pair<QString, KeywordHighlight>("Strings",KeywordHighlight("#F2DF17",QRegExp("(\".+\"|\'.+\')"))));
-        highlightings.insert(pair<QString, KeywordHighlight>("Numbers",KeywordHighlight("#792692",QRegExp("(true|false|\\d+)"))));
-        highlightings.insert(pair<QString, KeywordHighlight>("Comments",KeywordHighlight("#75715E",QRegExp("(--[^\\n]*)"))));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Code",KeywordHighlight("#F926F2",true)));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Strings",KeywordHighlight("#F2DF17",QRegExp("(\".+\"|\'.+\')"))));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Numbers",KeywordHighlight("#792692",QRegExp("(true|false|\\d+)"))));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Comments",KeywordHighlight("#75715E",QRegExp("(--[^\\n]*)"))));
 
-        highlightings.insert(pair<QString, KeywordHighlight>("Lua_L1",KeywordHighlight("#092672","break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not|math|table|string", '|', false)));
-        highlightings.insert(pair<QString, KeywordHighlight>("Lua_L2",KeywordHighlight("#F92672","tostring|next|tonumber|type|pairs|ipairs|abs|acos|asin|abs|atan|ceil|cos|deg|exp|floor|fmod|huge|max|maxinteger|min|mininteger|modf|pi|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult|concat|insert|move|pack|remove|sort|unpack|byte|char|dump|find|format|gmatch|gsub|len|lower|match|packsize|reverse|sub|upper", '|', false)));
-        highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L1",KeywordHighlight("#6609EF","screen|map|input|output|property", '|', false)));
-        highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L2",KeywordHighlight("#66D9EF","getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|getBool|getNumber|setBool|setNumber|getText", '|', false)));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Lua_L1",KeywordHighlight("#092672","break|do|else|elseif|end|for|function|if|in|local|repeat|return|then|until|while|or|and|not|math|table|string", '|', false)));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Lua_L2",KeywordHighlight("#F92672","tostring|next|tonumber|type|pairs|ipairs|abs|acos|asin|abs|atan|ceil|cos|deg|exp|floor|fmod|huge|max|maxinteger|min|mininteger|modf|pi|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult|concat|insert|move|pack|remove|sort|unpack|byte|char|dump|find|format|gmatch|gsub|len|lower|match|packsize|reverse|sub|upper", '|', false)));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L1",KeywordHighlight("#6609EF","screen|map|input|output|property", '|', false)));
+        this->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>("Stormworks_L2",KeywordHighlight("#66D9EF","getWidth|getHeight|setColor|drawClear|drawLine|drawCircle|drawCircleF|drawRect|drawRectF|drawTriangle|drawTriangleF|drawText|drawTextBox|drawMap|setMapColorOcean|setMapColorShallows|setMapColorLand|setMapColorGrass|setMapColorSand|setMapColorSnow|screenToMap|mapToScreen|getBool|getNumber|setBool|setNumber|getText", '|', false)));
     }
     bool operator==(const Settings &other) {
         if (this->fileSourcePath != other.fileSourcePath) return false;
-        if (this->highlightings != other.highlightings) return false;
+        if (this->fontSettings.highlightings != other.fontSettings.highlightings) return false;
         return true;
     }
     friend bool operator==(const Settings &left, const Settings &right) {
         if (left.fileSourcePath != right.fileSourcePath) return false;
-        if (left.highlightings != right.highlightings) return false;
+        if (left.fontSettings.highlightings != right.fontSettings.highlightings) return false;
         return true;
     }
     bool operator!=(const Settings &other) { return !operator==(other); }

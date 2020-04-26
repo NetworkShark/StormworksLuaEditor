@@ -7,6 +7,7 @@
 #include "engine.h"
 #include "structs.h"
 #include "palettesettingsdialog.h"
+#include "optionsdialog.h"
 #include <map>
 
 QT_BEGIN_NAMESPACE
@@ -23,7 +24,8 @@ public:
     Settings* globalSettings = nullptr;
 
 private slots:
-    void on_actionExit_triggered();
+    void on_actionMenuExit_triggered();
+    void on_actionMenuOptions_triggered();
     void on_actionMenuRun_triggered();
     void on_actionMenuNew_triggered();
     void on_actionMenuClear_triggered();

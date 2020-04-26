@@ -9,7 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(this->ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+    //Add Options button on Menu toolbar
+    QAction* action = new QAction("Options");
+    connect(action, &QAction::triggered, this, &MainWindow::on_actionMenuOptions_triggered);
+    ui->menubar->addAction(action);
+
+    //Add Event TextChanged on textEditor for highlight the code
+    connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
 }
 
 MainWindow::~MainWindow()
@@ -18,11 +24,20 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_actionExit_triggered()
+void MainWindow::on_actionMenuExit_triggered()
 {
     engine->Close();
     QApplication::exit();
 }
+
+void MainWindow::on_actionMenuOptions_triggered()
+{
+    OptionsDialog dialog(this);
+    dialog.settings = globalSettings;
+    dialog.show();
+    dialog.exec();
+}
+
 void MainWindow::on_actionMenuRun_triggered()
 {
     if (!this->engine)
@@ -70,7 +85,7 @@ QString MainWindow::highlightCode(QString code)
 {
     if (!globalSettings) return code;
     code = code.replace("\t", "  ");
-    map<QString, KeywordHighlight> highlights = globalSettings->highlightings;
+    map<QString, KeywordHighlight> highlights = globalSettings->fontSettings.highlightings;
     const char* startHighlightTag = "<font color=\"KEYCOLOR\">";
     QString endHighlightTag = "</font>";
     QRegExp regexpSplitCode("(--[^\\n]*|\\w+)");

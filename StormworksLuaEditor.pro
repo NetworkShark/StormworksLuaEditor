@@ -16,22 +16,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    dialoghighlight.cpp \
     engine.cpp \
     main.cpp \
     mainwindow.cpp \
-    options_dialog.cpp \
+    optionsdialog.cpp \
     palettesettingsdialog.cpp
 
 HEADERS += \
+    dialoghighlight.h \
     engine.h \
     mainwindow.h \
-    options_dialog.h \
+    optionsdialog.h \
     palettesettingsdialog.h \
     structs.h
 
 FORMS += \
+    dialoghighlight.ui \
     mainwindow.ui \
-    options_dialog.ui \
+    optionsdialog.ui \
     palettesettingsdialog.ui
 
 TRANSLATIONS += \

@@ -53,7 +53,7 @@ void PaletteSettingsDialog::DisplayColor(QPushButton* btn, QString keyColor, con
 QString PaletteSettingsDialog::getColorfromDictionary(QString key)
 {
     std::map<QString, KeywordHighlight>::iterator it;
-    if ((it = globalSettings->highlightings.find(key)) != globalSettings->highlightings.end())
+    if ((it = globalSettings->fontSettings.highlightings.find(key)) != globalSettings->fontSettings.highlightings.end())
     {
         return it->second.color;
     }
@@ -63,10 +63,10 @@ QString PaletteSettingsDialog::getColorfromDictionary(QString key)
 bool PaletteSettingsDialog::setColorfromDictionary(QString key, QColor color)
 {
     std::map<QString, KeywordHighlight>::iterator it;
-    if ((it = globalSettings->highlightings.find(key)) != globalSettings->highlightings.end())
+    if ((it = globalSettings->fontSettings.highlightings.find(key)) != globalSettings->fontSettings.highlightings.end())
     {
         QString colorName =  color.name();
-        globalSettings->highlightings[key].color = colorName;
+        globalSettings->fontSettings.highlightings[key].color = colorName;
         return true;
     }
     return false;

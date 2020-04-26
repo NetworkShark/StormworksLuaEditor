@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     }
     else {
         globalSettings.init();
+        globalSettings.fileSourcePath = configFilePath;
         globalSettings.writeConfig(configFilePath);
     }
 
