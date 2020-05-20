@@ -14,7 +14,7 @@
    <string>Stormworks Lua Editor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Icons.qrc">
+   <iconset resource="../Icons.qrc">
     <normaloff>:/Icons/Icons/Logo.ico</normaloff>:/Icons/Icons/Logo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -159,7 +159,7 @@
      <x>0</x>
      <y>0</y>
      <width>820</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -188,7 +188,6 @@
    <addaction name="actionMenuRun"/>
    <addaction name="actionMenuClear"/>
    <addaction name="separator"/>
-   <addaction name="actionMenuPalette"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionExit">
@@ -198,7 +197,7 @@
   </action>
   <action name="actionMenuNew">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset resource="../Icons.qrc">
      <normaloff>:/Icons/Icons/imageres_102.ico</normaloff>:/Icons/Icons/imageres_102.ico</iconset>
    </property>
    <property name="text">
@@ -210,7 +209,7 @@
   </action>
   <action name="actionMenuOpen">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset resource="../Icons.qrc">
      <normaloff>:/Icons/Icons/shell32_264.ico</normaloff>:/Icons/Icons/shell32_264.ico</iconset>
    </property>
    <property name="text">
@@ -222,7 +221,7 @@
   </action>
   <action name="actionMenuSave">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset resource="../Icons.qrc">
      <normaloff>:/Icons/Icons/62835-floppy-disk.ico</normaloff>:/Icons/Icons/62835-floppy-disk.ico</iconset>
    </property>
    <property name="text">
@@ -234,7 +233,7 @@
   </action>
   <action name="actionMenuRun">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset resource="../Icons.qrc">
      <normaloff>:/Icons/Icons/iconfinder_terminal_Play.png</normaloff>:/Icons/Icons/iconfinder_terminal_Play.png</iconset>
    </property>
    <property name="text">
@@ -246,7 +245,7 @@
   </action>
   <action name="actionMenuClear">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset resource="../Icons.qrc">
      <normaloff>:/Icons/Icons/iconfinder_terminal_clear.png</normaloff>:/Icons/Icons/iconfinder_terminal_clear.png</iconset>
    </property>
    <property name="text">
@@ -256,21 +255,9 @@
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionMenuPalette">
-   <property name="icon">
-    <iconset resource="Icons.qrc">
-     <normaloff>:/Icons/Icons/shell32_240.ico</normaloff>:/Icons/Icons/shell32_240.ico</iconset>
-   </property>
-   <property name="text">
-    <string>Palette Setting</string>
-   </property>
-   <property name="toolTip">
-    <string>Palette Setting</string>
-   </property>
-  </action>
  </widget>
  <resources>
-  <include location="Icons.qrc"/>
+  <include location="../Icons.qrc"/>
  </resources>
  <connections/>
 </ui>

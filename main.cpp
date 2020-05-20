@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "Forms/mainwindow.h"
 #include "structs.h"
 
 #include <QApplication>

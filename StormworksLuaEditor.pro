@@ -16,26 +16,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    dialoghighlight.cpp \
+    Forms/dialoghighlight.cpp \
+    Forms/mainwindow.cpp \
+    Forms/optionsdialog.cpp \
     engine.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    optionsdialog.cpp \
-    palettesettingsdialog.cpp
+    main.cpp
 
 HEADERS += \
-    dialoghighlight.h \
+    Forms/dialoghighlight.h \
+    Forms/mainwindow.h \
+    Forms/optionsdialog.h \
     engine.h \
-    mainwindow.h \
-    optionsdialog.h \
-    palettesettingsdialog.h \
     structs.h
 
 FORMS += \
-    dialoghighlight.ui \
-    mainwindow.ui \
-    optionsdialog.ui \
-    palettesettingsdialog.ui
+    Forms/dialoghighlight.ui \
+    Forms/mainwindow.ui \
+    Forms/optionsdialog.ui
 
 TRANSLATIONS += \
     StormworksLuaEditor_it_IT.ts
@@ -48,10 +45,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Icons.qrc
 
-win32: LIBS += -L$$PWD/lua535/ -llua5.3.5-static
+win32 {
+    ## Windows common build here
 
+    contains(QMAKE_TARGET.arch, x86_64) {
+    ## Windows x64 (64bit) specific build here
+    LIBS += -L$$PWD/lua535/ -llua53_x64
+    } else {
+    ## Windows x86 (32bit) specific build here
+    LIBS += -L$$PWD/lua535/ -llua53
+    }
+}
 INCLUDEPATH += $$PWD/lua535
 DEPENDPATH += $$PWD/lua535
-
-win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lua535/lua5.3.5-static.lib
-else:win32-g++: PRE_TARGETDEPS += $$PWD/lua535/lua5.3.5-static.lib

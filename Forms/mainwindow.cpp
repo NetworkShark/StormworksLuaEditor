@@ -16,13 +16,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Add Event TextChanged on textEditor for highlight the code
     connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+
+    //Add Event TextChanged on every textEditor for highlight the code
+//    for (int i=0;i<ui->tabTextEditor->count();i++) {
+//        QWidget* wdgt = ui->tabTextEditor->widget(i);
+//        if (wdgt && strncmp(wdgt->metaObject()->className(), "QHBoxLayout", strlen("QHBoxLayout")) && wdgt->children().count() > 0) {
+//            for (int j=0;j<wdgt->children().count();j++) {
+//                if (wdgt->children().at(j) && strncmp(wdgt->children().at(j)->metaObject()->className(), "QTextEdit", strlen("QTextEdit")))
+//                {
+//                    QTextEdit* textEdit = (QTextEdit*)wdgt->children().at(j);
+//                    connect(textEdit, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+//                }
+//            }
+//        }
+//    }
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
 
 void MainWindow::on_actionMenuExit_triggered()
 {
@@ -42,42 +56,44 @@ void MainWindow::on_actionMenuRun_triggered()
 {
     if (!this->engine)
         this->engine = new Engine();
-    if(this->ui->textEditor->toPlainText().size() > 0) {
-        if (this->engine->New()) {
-            QString codeString = this->ui->textEditor->toPlainText();
-            QByteArray code8bit = codeString.toLocal8Bit();
-            char *code = code8bit.data();
-            const char *result = this->engine->Run(code);
-            this->ui->textResults->append(result);
-            return;
-        }
-    }
-    this->ui->textResults->append("Error\n");
+//    if(this->ui->textEditor->toPlainText().size() > 0) {
+//        if (this->engine->New()) {
+//            QString codeString = this->ui->textEditor->toPlainText();
+//            QByteArray code8bit = codeString.toLocal8Bit();
+//            char *code = code8bit.data();
+//            const char *result = this->engine->Run(code);
+//            this->ui->textResults->append(result);
+//            return;
+//        }
+//    }
+//    this->ui->textResults->append("Error\n");
 }
 void MainWindow::on_actionMenuClear_triggered()
 {
-    ui->textResults->setPlainText("");
+//    ui->textResults->setPlainText("");
 }
 void MainWindow::on_actionMenuNew_triggered()
 {
-    ui->textEditor->setPlainText("");
+//    ui->textEditor->setPlainText("");
 }
 
 void MainWindow::on_textEditor_textChanged()
 {
-    if (disconnect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged))
-    {
-        QTextCursor cursor = ui->textEditor->textCursor();
-        int posCursor = cursor.position();
+    if (QString(this->sender()->metaObject()->className()) == "QTextEdit") {
+        QTextEdit* textEditor = (QTextEdit*)this->sender();
+        if (disconnect(textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged))
+        {
+            QTextCursor cursor = textEditor->textCursor();
+            int posCursor = cursor.position();
 
-        QString dataOriginal = ui->textEditor->toPlainText();
+            QString dataOriginal = textEditor->toPlainText();
+            QString code = highlightCode(dataOriginal);
 
-        QString code = highlightCode(dataOriginal);
-
-        ui->textEditor->setHtml(code);
-        cursor.setPosition(posCursor, QTextCursor::MoveAnchor);
-        ui->textEditor->setTextCursor(cursor);
-        connect(ui->textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+            textEditor->setHtml(code);
+            cursor.setPosition(posCursor, QTextCursor::MoveAnchor);
+            textEditor->setTextCursor(cursor);
+            connect(textEditor, &QTextEdit::textChanged, this, &MainWindow::on_textEditor_textChanged);
+        }
     }
 }
 
@@ -122,17 +138,4 @@ QString MainWindow::highlightCode(QString code)
     QString endHtml = QString("</pre>");
     return code.insert(0, startHtml).prepend(endHtml);
 
-}
-
-void MainWindow::on_actionMenuPalette_triggered()
-{
-    Settings* tmpSetting = new Settings(*globalSettings);
-    PaletteSettingsDialog dialog(this, tmpSetting);
-    dialog.show();
-    dialog.exec();
-    if (*tmpSetting != *globalSettings) {
-        globalSettings = tmpSetting;
-        globalSettings->writeConfig();
-        emit on_textEditor_textChanged();
-    }
 }

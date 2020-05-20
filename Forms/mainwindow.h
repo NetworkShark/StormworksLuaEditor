@@ -6,7 +6,6 @@
 #include <QMainWindow>
 #include "engine.h"
 #include "structs.h"
-#include "palettesettingsdialog.h"
 #include "optionsdialog.h"
 #include <map>
 
@@ -29,7 +28,6 @@ private slots:
     void on_actionMenuRun_triggered();
     void on_actionMenuNew_triggered();
     void on_actionMenuClear_triggered();
-    void on_actionMenuPalette_triggered();
 
 private:
     void on_textEditor_textChanged();
