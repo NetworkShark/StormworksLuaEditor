@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QColorDialog>
+#include <QComboBox>
 #include "structs.h"
 
 namespace Ui {
@@ -30,6 +31,7 @@ private slots:
 private:
     Ui::DialogHighlight *ui;
     KeywordHighlight *rule;
+    bool hasRegex = false;
     void DisplayColor(QPushButton *btn, QString keyColor, const int marginW = 12, const int marginH = 12, const char *borderColor = "#a3a3a3");
     void on_textBoxRegex_textChanged();
     void on_textBoxName_textChanged();

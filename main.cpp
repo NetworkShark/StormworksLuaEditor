@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
     }
 
     QApplication a(argc, argv);
-    MainWindow w;
-    w.globalSettings = &globalSettings;
+    MainWindow w(nullptr, &globalSettings);
 
     w.show();
     return a.exec();

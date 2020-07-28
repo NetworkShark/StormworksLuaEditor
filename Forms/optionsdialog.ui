@@ -57,7 +57,7 @@
          <property name="minimumSize">
           <size>
            <width>150</width>
-           <height>0</height>
+           <height>354</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -104,30 +104,9 @@
        <property name="text">
         <string>TextLabel</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTabWidget" name="tabWidget">
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>360</height>
-        </size>
+       <property name="margin">
+        <number>10</number>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="tab">
-        <attribute name="title">
-         <string>Tab 1</string>
-        </attribute>
-       </widget>
       </widget>
      </item>
     </layout>

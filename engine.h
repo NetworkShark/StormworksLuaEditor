@@ -1,13 +1,22 @@
+#pragma once
+
 #ifndef ENGINE_H
 #define ENGINE_H
 
 #include <string>
+#include <QString>
 
 extern "C" {
-#include "lua535/lua.h"
-#include "lua535/lauxlib.h"
-#include "lua535/lualib.h"
+#include "lua540/lua.h"
+#include "lua540/lauxlib.h"
+#include "lua540/lualib.h"
 }
+
+typedef struct luaMemFile
+{
+  const char *text;
+  size_t size;
+} luaMemFile;
 
 class Engine
 {
@@ -16,8 +25,10 @@ public:
     bool New();
     void Close();
     const char* Run(const char* code);
+    const char* Run(const QString code);
 private:
-    lua_State *lua;
+    lua_State *luaEngine;
+//    const char *readMemFile(lua_State *, void *ud, size_t *size);
 };
 
 #endif // ENGINE_H

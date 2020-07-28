@@ -17,37 +17,33 @@ class KeywordHighlight
 {
 public:
     bool defaultColor;
+    int weight;
     QString color;
     QRegExp regex;
     QStringList keywords;
 
-    KeywordHighlight() {
-        this->defaultColor = false;
-        this->color = nullptr;
-    }
-    KeywordHighlight(QString color, bool defaultColor = false) {
+    KeywordHighlight(QString color = NULL, int weight = 0, bool defaultColor = false) {
         this->defaultColor = defaultColor;
         this->color = color;
+        this->weight = weight;
     }
-    KeywordHighlight(QString color, QRegExp regexp, bool defaultColor = false) {
-        this->defaultColor = defaultColor;
-        this->color = color;
+    KeywordHighlight(QString color, QRegExp regexp, int weight = 0) : KeywordHighlight(color, weight) {
         this->regex = regexp;
     }
-    KeywordHighlight(QString color, QString keywords, const char separator = '|', bool defaultColor = false) {
-        this->defaultColor = defaultColor;
-        this->color = color;
-        this->keywords = keywords.split(separator, QString::SkipEmptyParts);
+    KeywordHighlight(QString color, QString keywords, int weight = 0, const char separator = '|') : KeywordHighlight(color, weight) {
+        this->keywords = keywords.split(separator, Qt::SkipEmptyParts);
     }
 
     bool operator==(const KeywordHighlight &other) {
         return this->color == other.color &&
+                this->weight == other.weight &&
                 this->regex == other.regex &&
                 this->keywords == other.keywords &&
                 this->defaultColor == other.defaultColor;
     }
     friend bool operator==(const KeywordHighlight &left, const KeywordHighlight &right) {
         return left.color == right.color &&
+                left.weight == right.weight &&
                 left.regex == right.regex &&
                 left.keywords == right.keywords &&
                 left.defaultColor == right.defaultColor;
@@ -69,8 +65,8 @@ public:
     QString fileSourcePath;
     //map<QString, KeywordHighlight> highlightings;
     struct FONT_SETTINGS {
-        string fontFamily;
-        ushort fontSize;
+        QString fontFamily;
+        uint fontSize;
         map<QString, KeywordHighlight> highlightings;
     };
     FONT_SETTINGS fontSettings;
@@ -91,26 +87,34 @@ public:
             bool retOK = false, highlightingsOK = false;
 
             for (QJsonObject::iterator itemSettings=obj.begin();itemSettings!=obj.end();++itemSettings) {
-                if (itemSettings.key() == QString("highlightings")) {
-                    if (itemSettings.value().isObject()) {
-                        QJsonObject highlight = obj.value(itemSettings.key()).toObject();
-                        for (QJsonObject::iterator itemHighlight=highlight.begin();itemHighlight!=highlight.end();++itemHighlight) {
-                            QString key = itemHighlight.key();
-                            QJsonObject value = highlight.value(key).toObject();
-                            bool def = value.value(QString("defaultColor")).toBool();
-                            QString color = value.value(QString("color")).toString();
-                            QString rawRegex = value.value(QString("regex")).toString();
-                            QString keywords = value.value(QString("keywords")).toString();
-                            KeywordHighlight* keyword;
-                            if (def)
-                                keyword = new KeywordHighlight(color, def);
-                            else if (!rawRegex.isEmpty())
-                                keyword = new KeywordHighlight(color, QRegExp(rawRegex));
-                            else
-                                keyword = new KeywordHighlight(color, keywords);
-                            if (keyword) {
-                                settings->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>(key, *keyword));
-                                if (!highlightingsOK) highlightingsOK = true;
+                if (itemSettings.key() == QString("font") && itemSettings.value().isObject()) {
+                    QJsonObject fontObj = itemSettings.value().toObject();
+                    for (QJsonObject::iterator fontSettings=fontObj.begin();fontSettings!=fontObj.end();++fontSettings) {
+                        if (fontSettings.key() == QString("fontFamily")) {
+                            settings->fontSettings.fontFamily = fontSettings.value().toString();
+                        } else if (fontSettings.key() == QString("fontSize")) {
+                            settings->fontSettings.fontSize = fontSettings.value().toInt();
+                        } else if (fontSettings.key() == QString("highlightings") && fontSettings.value().isObject()) {
+                            QJsonObject highlight = fontSettings.value().toObject();
+                            for (QJsonObject::iterator itemHighlight=highlight.begin();itemHighlight!=highlight.end();++itemHighlight) {
+                                QString key = itemHighlight.key();
+                                QJsonObject value = highlight.value(key).toObject();
+                                bool def = value.value(QString("defaultColor")).toBool();
+                                int weight = value.value(QString("weight")).toInt();
+                                QString color = value.value(QString("color")).toString();
+                                QString rawRegex = value.value(QString("regex")).toString();
+                                QString keywords = value.value(QString("keywords")).toString();
+                                KeywordHighlight* keyword = nullptr;
+                                if (def)
+                                    keyword = new KeywordHighlight(color, weight, def);
+                                else if (!rawRegex.isEmpty())
+                                    keyword = new KeywordHighlight(color, QRegExp(rawRegex), weight);
+                                else
+                                    keyword = new KeywordHighlight(color, keywords, weight);
+                                if (keyword) {
+                                    settings->fontSettings.highlightings.insert(pair<QString, KeywordHighlight>(key, *keyword));
+                                    if (!highlightingsOK) highlightingsOK = true;
+                                }
                             }
                         }
                     }
@@ -142,17 +146,24 @@ public:
             }
             QJsonObject keyword{
                 {"defaultColor", it->second.defaultColor},
+                {"weight", it->second.weight},
                 {"color", it->second.color},
                 {"regex", it->second.regex.isEmpty() ? "" : it->second.regex.pattern()},
-                {"keywords", keywordsList}
-            };
-            highlight.insert(it->first, keyword);
-        }
-        QJsonDocument doc(
-            QJsonObject{
-                {"highlightings", highlight}
+                    {"keywords", keywordsList}
+                };
+                highlight.insert(it->first, keyword);
             }
-        );
+        QJsonDocument doc(
+                    QJsonObject{
+                        {"font", QJsonObject{
+                             {"fontFamily", this->fontSettings.fontFamily},
+                             {"fontSize",  (int)this->fontSettings.fontSize},
+                             {"highlightings", highlight}
+                         }
+                        },
+
+                    }
+                    );
 
         QFile file(pathfile);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;

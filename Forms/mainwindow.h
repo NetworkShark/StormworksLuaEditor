@@ -4,10 +4,16 @@
 #include <Qt>
 #include <QTextEdit>
 #include <QMainWindow>
+#include <QTimer>
+#include <QSettings>
+
+#include <map>
+
 #include "engine.h"
 #include "structs.h"
 #include "optionsdialog.h"
-#include <map>
+#include "highlighter.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,7 +24,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr, Settings* globalSettings = nullptr);
     ~MainWindow();
     Settings* globalSettings = nullptr;
 
@@ -33,7 +39,10 @@ private:
     void on_textEditor_textChanged();
     QString highlightCode(QString code);
     Ui::MainWindow* ui;
+    QTimer* timerhighlightCode;
     Engine* engine = nullptr;
+    int oldCursorPosition = 0;
+    Highlighter *highlighter;
 
 };
 

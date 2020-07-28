@@ -19,20 +19,25 @@ SOURCES += \
     Forms/dialoghighlight.cpp \
     Forms/mainwindow.cpp \
     Forms/optionsdialog.cpp \
+    Widgets/cfg_enviroment.cpp \
     engine.cpp \
+    highlighter.cpp \
     main.cpp
 
 HEADERS += \
     Forms/dialoghighlight.h \
     Forms/mainwindow.h \
     Forms/optionsdialog.h \
+    Widgets/cfg_enviroment.h \
     engine.h \
+    highlighter.h \
     structs.h
 
 FORMS += \
     Forms/dialoghighlight.ui \
     Forms/mainwindow.ui \
-    Forms/optionsdialog.ui
+    Forms/optionsdialog.ui \
+    Widgets/cfg_enviroment.ui
 
 TRANSLATIONS += \
     StormworksLuaEditor_it_IT.ts
@@ -48,13 +53,11 @@ RESOURCES += \
 win32 {
     ## Windows common build here
 
-    contains(QMAKE_TARGET.arch, x86_64) {
+    contains(QMAKE_HOST.arch, x86_64) {
     ## Windows x64 (64bit) specific build here
-    LIBS += -L$$PWD/lua535/ -llua53_x64
+    LIBS += -L$$PWD/lua540/ -llua54_x64
     } else {
     ## Windows x86 (32bit) specific build here
-    LIBS += -L$$PWD/lua535/ -llua53
+    LIBS += -L$$PWD/lua540/ -llua54
     }
 }
-INCLUDEPATH += $$PWD/lua535
-DEPENDPATH += $$PWD/lua535

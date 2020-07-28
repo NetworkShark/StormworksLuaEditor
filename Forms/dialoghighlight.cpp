@@ -11,6 +11,17 @@ DialogHighlight::DialogHighlight(QWidget *parent, QString *title) :
         this->setWindowTitle(*title);
     else
         this->setWindowTitle("New Highlight Rule");
+
+    ui->comboBoxFontWeight->clear();
+    ui->comboBoxFontWeight->addItem("Thin", 0);
+    ui->comboBoxFontWeight->addItem("ExtraLight", 12);
+    ui->comboBoxFontWeight->addItem("Light", 25);
+    ui->comboBoxFontWeight->addItem("Normal", 50);
+    ui->comboBoxFontWeight->addItem("Medium", 57);
+    ui->comboBoxFontWeight->addItem("DemiBold", 63);
+    ui->comboBoxFontWeight->addItem("Bold", 75);
+    ui->comboBoxFontWeight->addItem("ExtraBold", 81);
+    ui->comboBoxFontWeight->addItem("Black", 87);
 }
 
 DialogHighlight::~DialogHighlight()
@@ -51,14 +62,19 @@ void DialogHighlight::on_listSearchWords_itemSelectionChanged()
 
 void DialogHighlight::on_pushButtonAdd_clicked()
 {
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("Add New Word"), tr("Word:"), QLineEdit::Normal, "", &ok);
+    bool ok = false;
+    QString text = NULL;
+    if (hasRegex)
+        text = QInputDialog::getText(this, tr("Add Regular Expression"), tr("Regular Expression:"), QLineEdit::Normal, "", &ok);
+    else
+        text = QInputDialog::getText(this, tr("Add New Word"), tr("Word:"), QLineEdit::Normal, "", &ok);
     if (ok && !text.isEmpty())
     {
-        if (ui->textBoxRegex->isEnabled())
-            ui->textBoxRegex->setEnabled(false);
         ui->listSearchWords->addItem(text);
-        this->rule->keywords.append(text);
+        if (hasRegex)
+            this->rule->regex.setPattern(text);
+        else
+            this->rule->keywords.append(text);
     }
 }
 
@@ -71,7 +87,10 @@ void DialogHighlight::on_pushButtonEdit_clicked()
     {
         int pos = ui->listSearchWords->row(item);
         item->setText(text);
-        this->rule->keywords[pos] = text;
+        if (hasRegex)
+            this->rule->regex.setPattern(text);
+        else
+            this->rule->keywords[pos] = text;
     }
 }
 
@@ -83,11 +102,10 @@ void DialogHighlight::on_pushButtonRemove_clicked()
         QListWidgetItem* item = ui->listSearchWords->selectedItems().first();
         int pos = ui->listSearchWords->row(item);
         ui->listSearchWords->takeItem(pos);
-        this->rule->keywords.removeAt(pos);
-        if (ui->listSearchWords->count() <= 0)
-        {
-            ui->textBoxRegex->setEnabled(true);
-        }
+        if (hasRegex)
+            this->rule->regex.setPattern("");
+        else
+            this->rule->keywords.removeAt(pos);
     }
 }
 
@@ -118,24 +136,6 @@ void DialogHighlight::on_textBoxName_textChanged()
     }
 }
 
-void DialogHighlight::on_textBoxRegex_textChanged()
-{
-    ui->groupBoxSearchWord->setEnabled(ui->textBoxRegex->toPlainText() <= 0);
-    if (disconnect(ui->textBoxRegex, &QTextEdit::textChanged, this, &DialogHighlight::on_textBoxRegex_textChanged))
-    {
-        QTextCursor cursor = ui->textBoxRegex->textCursor();
-        int posCursor = cursor.position();
-        QString data = ui->textBoxRegex->toPlainText().remove("\n\r", Qt::CaseInsensitive).remove(QChar('\n'), Qt::CaseInsensitive);
-        ui->textBoxRegex->setPlainText(data);
-        cursor.setPosition(posCursor, QTextCursor::MoveAnchor);
-        ui->textBoxRegex->setTextCursor(cursor);
-        connect(ui->textBoxRegex, &QTextEdit::textChanged, this, &DialogHighlight::on_textBoxRegex_textChanged);
-    }
-
-
-
-}
-
 KeywordHighlight DialogHighlight::showDialog(QString *nameRule, KeywordHighlight *rule)
 {
     if (nameRule)
@@ -143,25 +143,49 @@ KeywordHighlight DialogHighlight::showDialog(QString *nameRule, KeywordHighlight
     if (rule)
     {
         this->rule = new KeywordHighlight(*rule);
+
+        int comboIdx = -1;
+        if ((comboIdx = ui->comboBoxFontWeight->findData(rule->weight)) != -1)
+            ui->comboBoxFontWeight->setCurrentIndex(comboIdx);
+        else
+            ui->comboBoxFontWeight->setCurrentIndex(0);
+
         DisplayColor(ui->btnPickerColor, this->rule->color);
+
         if (this->rule->regex.pattern().count() > 0)
         {
-            ui->textBoxRegex->setText(this->rule->regex.pattern());
-            ui->groupBoxSearchWord->setEnabled(false);
+            ui->listSearchWords->addItem(this->rule->regex.pattern());
+            hasRegex = true;
         }
         else
         {
-                ui->listSearchWords->addItems(this->rule->keywords);
-                ui->textBoxRegex->setEnabled(false);
+            ui->listSearchWords->addItems(this->rule->keywords);
         }
     }
     else
     {
         this->rule = new KeywordHighlight();
         DisplayColor(ui->btnPickerColor, QString("#000000"));
+        QMessageBox box(
+                    QMessageBox::Question,
+                    tr("Regex or Keyword"),
+                    tr("Si vuole creare una nuova regola con una Regular Expression oppure una lista di parole chiave?"));
+        QPushButton *addRegex = box.addButton(tr("Reg. Exp."), QMessageBox::ActionRole);
+        QPushButton *addKeyword = box.addButton(tr("Parole Chiave"), QMessageBox::ActionRole);
+
+        while (true) {
+            box.exec();
+            if (addRegex == box.clickedButton())
+            {
+                hasRegex = true;
+                break;
+            }
+            else if (addKeyword == box.clickedButton()) {
+                break;
+            }
+        }
     }
     connect(ui->textBoxName, &QTextEdit::textChanged, this, &DialogHighlight::on_textBoxName_textChanged);
-    connect(ui->textBoxRegex, &QTextEdit::textChanged, this, &DialogHighlight::on_textBoxRegex_textChanged);
 
     do {
         this->show();
@@ -171,16 +195,11 @@ KeywordHighlight DialogHighlight::showDialog(QString *nameRule, KeywordHighlight
         {
             if (ui->textBoxName->toPlainText().count() <= 0)
                 QMessageBox::warning(this, tr("Error"), tr("Name not entered!"));
-            else if (ui->textBoxRegex->toPlainText().count() <= 0 && ui->listSearchWords->count() <= 0)
-                QMessageBox::warning(this, tr("Error"), tr("Both Regular Expression and Search Word list are empty!\nUse one of those!"));
-            else if (ui->textBoxRegex->toPlainText().count() > 0 && ui->listSearchWords->count() > 0)
-                QMessageBox::warning(this, tr("Error"), tr("Both Regular Expression and Search Word's list are in use!\nUse ONLY one of those!"));
             else
             {
                 if (nameRule != ui->textBoxName->toPlainText())
                     *nameRule = ui->textBoxName->toPlainText();
-                if (this->rule->regex.pattern() != ui->textBoxRegex->toPlainText())
-                    this->rule->regex.setPattern(ui->textBoxRegex->toPlainText());
+                this->rule->weight = ui->comboBoxFontWeight->currentData().toInt();
                 break;
             }
         }
