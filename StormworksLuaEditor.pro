@@ -20,6 +20,7 @@ SOURCES += \
     Forms/mainwindow.cpp \
     Forms/optionsdialog.cpp \
     Widgets/cfg_enviroment.cpp \
+    Widgets/qcodeedit.cpp \
     engine.cpp \
     highlighter.cpp \
     main.cpp
@@ -29,6 +30,7 @@ HEADERS += \
     Forms/mainwindow.h \
     Forms/optionsdialog.h \
     Widgets/cfg_enviroment.h \
+    Widgets/qcodeedit.h \
     engine.h \
     highlighter.h \
     structs.h

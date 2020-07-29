@@ -11,8 +11,10 @@ MainWindow::MainWindow(QWidget *parent, Settings* globalSettings)
 
     this->globalSettings = globalSettings;
 
-    ui->textEditor->setFontFamily(globalSettings->fontSettings.fontFamily);
-    ui->textEditor->setFontPointSize(globalSettings->fontSettings.fontSize);
+    QFont font(globalSettings->fontSettings.fontFamily, globalSettings->fontSettings.fontSize);
+    ui->textEditor->setFont(font);
+//    ui->textEditor->setFontFamily(globalSettings->fontSettings.fontFamily);
+//    ui->textEditor->setFontPointSize(globalSettings->fontSettings.fontSize);
 
     //Add Options button on Menu toolbar
     QAction* action = new QAction("Options");
@@ -42,9 +44,11 @@ void MainWindow::on_actionMenuOptions_triggered()
     dialog.show();
     if (dialog.exec() == QDialog::Accepted)
     {
-        ui->textEditor->setFontFamily(globalSettings->fontSettings.fontFamily);
-        ui->textEditor->setFontPointSize(globalSettings->fontSettings.fontSize);
-        ui->textEditor->setText(ui->textEditor->toPlainText());
+        QFont font(globalSettings->fontSettings.fontFamily, globalSettings->fontSettings.fontSize);
+        ui->textEditor->setFont(font);
+//        ui->textEditor->setFontFamily(globalSettings->fontSettings.fontFamily);
+//        ui->textEditor->setFontPointSize(globalSettings->fontSettings.fontSize);
+        ui->textEditor->setPlainText(ui->textEditor->toPlainText());
     }
 }
 
